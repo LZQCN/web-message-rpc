@@ -1,5 +1,15 @@
 import { generateToken, formatError } from "./utils";
 
+export interface Adapter {
+  addEventListener(callback: (payload: any) => void): void;
+  removeEventListener(callback: (payload: any) => void): void;
+  postMessage(payload: any): void;
+}
+
+export type Method = (...args: any[]) => any;
+
+export type CallRecord = Record<string, Method>;
+
 /**
  * Web Message Remote Procedure Call class.
  * @template T The type used in Web Message RPC.
@@ -46,13 +56,9 @@ export default class WebMessageRPC<T> {
     }
   ) as T;
 
-  callMap: Map<string, (...args: any[]) => any>;
+  callMap: Map<string, Method>;
   private _messageHandler: (payload: any) => void;
-  adapter: {
-    addEventListener(callback: (payload: any) => void): void;
-    removeEventListener(callback: (payload: any) => void): void;
-    postMessage(payload: any): void;
-  };
+  adapter: Adapter;
   promiseMap = new Map<
     string,
     { resolve: (value: unknown) => void; reject: (reason?: any) => void }
@@ -63,10 +69,7 @@ export default class WebMessageRPC<T> {
    * @param adapter The adapter object used for sending and receiving messages.
    * @param callRecord The call record, which can be an object containing methods.
    */
-  constructor(
-    adapter: WebMessageRPC<T>["adapter"],
-    callRecord?: Record<string, (...args: any[]) => any>
-  ) {
+  constructor(adapter: WebMessageRPC<T>["adapter"], callRecord?: CallRecord) {
     this.callMap = new Map(Object.entries(callRecord ?? {}));
     this._messageHandler = this.messageHandler.bind(this);
     this.adapter = adapter;
@@ -151,23 +154,15 @@ export default class WebMessageRPC<T> {
    * @param callRecord The call record, which can be an object containing methods.
    * @returns The registered call record.
    */
-  register<C extends Record<string, (...args: any[]) => any>>(
-    callRecord: C
-  ): Required<C>;
+  register<C extends CallRecord>(callRecord: C): Required<C>;
   /**
    * Registers a group of methods to the call record with a specified namespace.
    * @param namespace The namespace.
    * @param callRecord The call record, which can be an object containing methods.
    * @returns The registered call record.
    */
-  register<C extends Record<string, (...args: any[]) => any>>(
-    namespace: string,
-    callRecord: C
-  ): Required<C>;
-  register<C extends Record<string, (...args: any[]) => any>>(
-    arg1: string | C,
-    arg2?: C
-  ): Required<C> {
+  register<C extends CallRecord>(namespace: string, callRecord: C): Required<C>;
+  register<C extends CallRecord>(arg1: string | C, arg2?: C): Required<C> {
     let namespace: string;
     let callRecord: C | undefined;
     if (typeof arg1 == "string") namespace = arg1;
@@ -186,23 +181,18 @@ export default class WebMessageRPC<T> {
    * @param callRecord The call record, which can be an object containing methods.
    * @returns The deregistered call record.
    */
-  deregister<C extends Record<string, (...args: any[]) => any>>(
-    callRecord: C
-  ): Required<C>;
+  deregister<C extends CallRecord>(callRecord: C): Required<C>;
   /**
    * Deregisters a group of methods from the call record with a specified namespace.
    * @param namespace The namespace.
    * @param callRecord The call record, which can be an object containing methods.
    * @returns The deregistered call record.
    */
-  deregister<C extends Record<string, (...args: any[]) => any>>(
+  deregister<C extends CallRecord>(
     namespace: string,
     callRecord: C
   ): Required<C>;
-  deregister<C extends Record<string, (...args: any[]) => any>>(
-    arg1: string | C,
-    arg2?: C
-  ): Required<C> {
+  deregister<C extends CallRecord>(arg1: string | C, arg2?: C): Required<C> {
     let namespace: string;
     let callRecord: C | undefined;
     if (typeof arg1 == "string") namespace = arg1;
@@ -221,7 +211,7 @@ export default class WebMessageRPC<T> {
    * @param namespace The namespace.
    * @returns The proxy object for the namespace.
    */
-  use<C extends Record<string, (...args: any[]) => any>>(namespace: string): C {
+  use<C extends CallRecord>(namespace: string): C {
     return new Proxy(
       {},
       {
