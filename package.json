@@ -1,9 +1,10 @@
 {
   "name": "web-message-rpc",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A class for implementing Remote Procedure Call (RPC) between web applications, providing an easy-to-use interface with ES6 Proxy-based method invocation.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "type": "module",
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build"
