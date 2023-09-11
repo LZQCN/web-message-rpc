@@ -1,26 +1,26 @@
-[简体中文](./README.md) | English
+[English](./README.md) | 简体中文
 
 # Web Message RPC
 
-Web Message RPC is a class for implementing Remote Procedure Call (RPC) between web applications.
+Web Message RPC 是一个用于实现 Web 应用间远程过程调用（RPC）的类。
 
-## Installation
+## 安装
 
-Install the class using npm:
+使用 npm 安装该类：
 
 ```
 npm install web-message-rpc
 ```
 
-## Usage
+## 使用方法
 
-### Import the `WebMessageRPC` class:
+### 导入 `WebMessageRPC` 类：
 
 ```typescript
 import { WebMessageRPC, Adapter } from "web-message-rpc";
 ```
 
-### Create an `Adapter` object for sending and receiving messages. The adapter object needs to implement the following interface:
+### 创建一个 `Adapter` 适配器对象，用于发送和接收消息。适配器对象需要实现以下接口：
 
 ```typescript
 interface Adapter {
@@ -30,9 +30,9 @@ interface Adapter {
 }
 ```
 
-WebSocket adapter example:
+WebSocket 适配器例子：
 
-- Server-side
+- 服务端
 
 ```typescript
 let handler;
@@ -50,7 +50,7 @@ const adapter: Adapter = {
 };
 ```
 
-- Client-side
+- 客户端
 
 ```typescript
 let handler;
@@ -68,11 +68,11 @@ const adapter: Adapter = {
 };
 ```
 
-> Note: When using WebSocket communication, you need to implement data serialization and deserialization yourself. `JSON.stringify()` and `JSON.parse()` are just one simple way.
+> 注意，在使用 WebSocket 通信时，您需要自行实现数据的序列化与反序列化，`JSON.stringify()` 和 `JSON.parse()` 只是最简单一种方式。
 
-iframe adapter example:
+iframe 适配器例子：
 
-- Parent page
+- 父页面：
 
 ```typescript
 let handler;
@@ -90,7 +90,7 @@ const adapter: Adapter = {
 };
 ```
 
-- Child page
+- 子页面：
 
 ```typescript
 let handler;
@@ -108,15 +108,15 @@ const adapter: Adapter = {
 };
 ```
 
-### Register methods on one end and call methods on the other end:
+### 在一端注册方法，并在另一端调用方法：
 
-- Register methods on the A end using a WebMessageRPC instance:
+- 在 A 端通过 WebMessageRPC 实例注册方法：
 
 ```typescript
-// Create a WebMessageRPC instance using the adapter object:
+// 使用适配器对象创建一个 WebMessageRPC 实例：
 const rpc = new WebMessageRPC(adapter);
 
-// Register methods to the WebMessageRPC instance
+// 将方法注册到 WebMessageRPC 实例
 rpc.register({
   add(a: number, b: number) {
     return a + b;
@@ -127,30 +127,30 @@ rpc.register({
 });
 ```
 
-- Now, you can call the registered methods on the B end using the WebMessageRPC instance:
+- 现在，你可以在 B 端通过 WebMessageRPC 实例进行远程方法调用，如下所示：
 
 ```typescript
-// Create a WebMessageRPC instance using the adapter object:
+// 使用适配器对象创建一个 WebMessageRPC 实例：
 const rpc = new WebMessageRPC(adapter);
 
 async function main() {
-  // Call the methods provided by the A end through rpc.callProxy, just like calling regular functions.
+  // 通过 rpc.callProxy 调用 A 端提供的方法，就像调用普通的函数一样。
   const result = await rpc.callProxy.add(1, 2);
-  console.log(result); // Output: 3
+  console.log(result); // 输出: 3
 }
 
 main();
 ```
 
-### Using namespaces:
+### 使用命名空间：
 
-- On the A end, register methods and specify a namespace:
+- 在 A 端，注册方法，并指定命名空间：
 
 ```typescript
-// Create a WebMessageRPC instance using the adapter object:
+// 使用适配器对象创建一个 WebMessageRPC 实例：
 const rpc = new WebMessageRPC(adapter);
 
-// When registering methods, specify the namespace as the first parameter.
+// 在注册方法时，第一个参数填写命名空间
 rpc.register("myModule", {
   add(a: number, b: number) {
     return a + b;
@@ -161,64 +161,64 @@ rpc.register("myModule", {
 });
 ```
 
-- On the B end, use the specified namespace:
+- 在 B 端，使用指定的命名空间：
 
 ```typescript
-// Create a WebMessageRPC instance using the adapter object:
+// 使用适配器对象创建一个 WebMessageRPC 实例：
 const rpc = new WebMessageRPC(adapter);
 
-// Use the specified namespace to get the proxy module.
+// 指定命名空间获得代理模块
 const myModule = rpc.use("myModule");
 
 async function main() {
-  // Call the methods more succinctly through the proxy module.
+  // 通过代理模块可以更简洁地调用方法
   const result = await myModule.add(1, 2);
-  console.log(result); // Output: 3
+  console.log(result); // 输出: 3
 }
 
 main();
 ```
 
-## Methods
+## 方法
 
 ### register
 
-Register a collection of methods to the call record.
+将一个方法集合注册到调用记录中。
 
 ```typescript
 register(callRecord: {[methodName: string]: (...args: any[]) => any})
 register(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`: The collection of methods to be registered, including the method names and corresponding functions.
-- `namespace`: Optional parameter for namespace.
+- `callRecord`：要注册的方法集合对象，包含方法名和对应的函数。
+- `namespace`：可选参数，用于命名空间。
 
 ### deregister
 
-Unregister a method or a collection of methods from the call record.
+从调用记录中取消注册一个方法或方法集合。
 
 ```typescript
 deregister(callRecord: {[methodName: string]: (...args: any[]) => any})
 deregister(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`: The collection of methods to be unregistered, including the method names and corresponding functions.
-- `namespace`: Optional parameter for namespace.
+- `callRecord`：要取消注册的方法集合对象，包含方法名和对应的函数。
+- `namespace`：可选参数，用于命名空间。
 
 ### use
 
-Create a proxy object for a namespace, used to call methods under that namespace.
+创建一个命名空间的代理对象，用于调用该命名空间下的方法。
 
 ```typescript
 use(namespace: string): {[methodName: string]: (...args: any[]) => any};
 ```
 
-- `namespace`: The namespace.
+- `namespace`：命名空间。
 
 ### destroy
 
-Destroy the WebMessageRPC instance and clear callback functions and Promise objects.
+销毁 WebMessageRPC 实例，清空回调函数和 Promise 对象。
 
-## Contributing
+## 贡献
 
-Your contributions and suggestions are welcome!
+欢迎提供改进建议和报告问题。
