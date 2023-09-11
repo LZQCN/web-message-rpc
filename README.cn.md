@@ -20,6 +20,77 @@ npm install web-message-rpc
 import { WebMessageRPC, Adapter } from "web-message-rpc";
 ```
 
+### 在一端注册方法，并在另一端调用方法：
+
+- 在 A 端通过 WebMessageRPC 实例注册方法：
+
+```typescript
+// 使用适配器对象创建一个 WebMessageRPC 实例：
+const rpc = new WebMessageRPC(adapter);
+
+// 将方法注册到 WebMessageRPC 实例
+rpc.register({
+  add(a: number, b: number) {
+    return a + b;
+  },
+  subtract(a: number, b: number) {
+    return a - b;
+  },
+});
+```
+
+- 现在，你可以在 B 端通过 WebMessageRPC 实例进行远程方法调用，如下所示：
+
+```typescript
+// 使用适配器对象创建一个 WebMessageRPC 实例：
+const rpc = new WebMessageRPC(adapter);
+
+async function main() {
+  // 通过 rpc.callProxy 调用 A 端提供的方法，就像调用普通的函数一样。
+  const result = await rpc.callProxy.add(1, 2);
+  console.log(result); // 输出: 3
+}
+
+main();
+```
+
+### 使用命名空间：
+
+- 在 A 端，注册方法，并指定命名空间：
+
+```typescript
+// 使用适配器对象创建一个 WebMessageRPC 实例：
+const rpc = new WebMessageRPC(adapter);
+
+// 在注册方法时，第一个参数填写命名空间
+rpc.register("myNamespace", {
+  add(a: number, b: number) {
+    return a + b;
+  },
+  subtract(a: number, b: number) {
+    return a - b;
+  },
+});
+```
+
+- 在 B 端，使用指定的命名空间：
+
+```typescript
+// 使用适配器对象创建一个 WebMessageRPC 实例：
+const rpc = new WebMessageRPC(adapter);
+
+// 指定命名空间获得代理对象
+const myNamespace = rpc.use("myNamespace");
+
+async function main() {
+  // 通过命名空间可以更简洁地调用方法
+  const result = await myNamespace.add(1, 2);
+  console.log(result); // 输出: 3
+}
+
+main();
+```
+
 ### 创建一个 `Adapter` 适配器对象，用于发送和接收消息。适配器对象需要实现以下接口：
 
 ```typescript
@@ -106,77 +177,6 @@ const adapter: Adapter = {
     window.parent.postMessage(payload);
   },
 };
-```
-
-### 在一端注册方法，并在另一端调用方法：
-
-- 在 A 端通过 WebMessageRPC 实例注册方法：
-
-```typescript
-// 使用适配器对象创建一个 WebMessageRPC 实例：
-const rpc = new WebMessageRPC(adapter);
-
-// 将方法注册到 WebMessageRPC 实例
-rpc.register({
-  add(a: number, b: number) {
-    return a + b;
-  },
-  subtract(a: number, b: number) {
-    return a - b;
-  },
-});
-```
-
-- 现在，你可以在 B 端通过 WebMessageRPC 实例进行远程方法调用，如下所示：
-
-```typescript
-// 使用适配器对象创建一个 WebMessageRPC 实例：
-const rpc = new WebMessageRPC(adapter);
-
-async function main() {
-  // 通过 rpc.callProxy 调用 A 端提供的方法，就像调用普通的函数一样。
-  const result = await rpc.callProxy.add(1, 2);
-  console.log(result); // 输出: 3
-}
-
-main();
-```
-
-### 使用命名空间：
-
-- 在 A 端，注册方法，并指定命名空间：
-
-```typescript
-// 使用适配器对象创建一个 WebMessageRPC 实例：
-const rpc = new WebMessageRPC(adapter);
-
-// 在注册方法时，第一个参数填写命名空间
-rpc.register("myModule", {
-  add(a: number, b: number) {
-    return a + b;
-  },
-  subtract(a: number, b: number) {
-    return a - b;
-  },
-});
-```
-
-- 在 B 端，使用指定的命名空间：
-
-```typescript
-// 使用适配器对象创建一个 WebMessageRPC 实例：
-const rpc = new WebMessageRPC(adapter);
-
-// 指定命名空间获得代理模块
-const myModule = rpc.use("myModule");
-
-async function main() {
-  // 通过代理模块可以更简洁地调用方法
-  const result = await myModule.add(1, 2);
-  console.log(result); // 输出: 3
-}
-
-main();
 ```
 
 ## 方法

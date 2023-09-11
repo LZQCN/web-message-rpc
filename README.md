@@ -20,6 +20,77 @@ npm install web-message-rpc
 import { WebMessageRPC, Adapter } from "web-message-rpc";
 ```
 
+### Register methods on one end and call methods on the other end:
+
+- Register methods on the A end using a WebMessageRPC instance:
+
+```typescript
+// Create a WebMessageRPC instance using the adapter object:
+const rpc = new WebMessageRPC(adapter);
+
+// Register methods to the WebMessageRPC instance
+rpc.register({
+  add(a: number, b: number) {
+    return a + b;
+  },
+  subtract(a: number, b: number) {
+    return a - b;
+  },
+});
+```
+
+- Now, you can call the registered methods on the B end using the WebMessageRPC instance:
+
+```typescript
+// Create a WebMessageRPC instance using the adapter object:
+const rpc = new WebMessageRPC(adapter);
+
+async function main() {
+  // Call the methods provided by the A end through rpc.callProxy, just like calling regular functions.
+  const result = await rpc.callProxy.add(1, 2);
+  console.log(result); // Output: 3
+}
+
+main();
+```
+
+### Using namespaces:
+
+- On the A end, register methods and specify a namespace:
+
+```typescript
+// Create a WebMessageRPC instance using the adapter object:
+const rpc = new WebMessageRPC(adapter);
+
+// When registering methods, specify the namespace as the first parameter.
+rpc.register("myNamespace", {
+  add(a: number, b: number) {
+    return a + b;
+  },
+  subtract(a: number, b: number) {
+    return a - b;
+  },
+});
+```
+
+- On the B end, use the specified namespace:
+
+```typescript
+// Create a WebMessageRPC instance using the adapter object:
+const rpc = new WebMessageRPC(adapter);
+
+// Use the specified namespace to get the proxy object.
+const myNamespace = rpc.use("myNamespace");
+
+async function main() {
+  // Call the methods more succinctly through the namespace.
+  const result = await myNamespace.add(1, 2);
+  console.log(result); // Output: 3
+}
+
+main();
+```
+
 ### Create an `Adapter` object for sending and receiving messages. The adapter object needs to implement the following interface:
 
 ```typescript
@@ -106,77 +177,6 @@ const adapter: Adapter = {
     window.parent.postMessage(payload);
   },
 };
-```
-
-### Register methods on one end and call methods on the other end:
-
-- Register methods on the A end using a WebMessageRPC instance:
-
-```typescript
-// Create a WebMessageRPC instance using the adapter object:
-const rpc = new WebMessageRPC(adapter);
-
-// Register methods to the WebMessageRPC instance
-rpc.register({
-  add(a: number, b: number) {
-    return a + b;
-  },
-  subtract(a: number, b: number) {
-    return a - b;
-  },
-});
-```
-
-- Now, you can call the registered methods on the B end using the WebMessageRPC instance:
-
-```typescript
-// Create a WebMessageRPC instance using the adapter object:
-const rpc = new WebMessageRPC(adapter);
-
-async function main() {
-  // Call the methods provided by the A end through rpc.callProxy, just like calling regular functions.
-  const result = await rpc.callProxy.add(1, 2);
-  console.log(result); // Output: 3
-}
-
-main();
-```
-
-### Using namespaces:
-
-- On the A end, register methods and specify a namespace:
-
-```typescript
-// Create a WebMessageRPC instance using the adapter object:
-const rpc = new WebMessageRPC(adapter);
-
-// When registering methods, specify the namespace as the first parameter.
-rpc.register("myModule", {
-  add(a: number, b: number) {
-    return a + b;
-  },
-  subtract(a: number, b: number) {
-    return a - b;
-  },
-});
-```
-
-- On the B end, use the specified namespace:
-
-```typescript
-// Create a WebMessageRPC instance using the adapter object:
-const rpc = new WebMessageRPC(adapter);
-
-// Use the specified namespace to get the proxy module.
-const myModule = rpc.use("myModule");
-
-async function main() {
-  // Call the methods more succinctly through the proxy module.
-  const result = await myModule.add(1, 2);
-  console.log(result); // Output: 3
-}
-
-main();
 ```
 
 ## Methods
