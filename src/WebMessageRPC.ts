@@ -8,7 +8,8 @@ export interface Adapter {
 
 export type Method = (...args: any[]) => any;
 
-export type CallRecord = Record<string, Method>;
+export type Methods = Record<string, Method>;
+export type CallRecord = Methods;
 
 /**
  * Web Message Remote Procedure Call class.
@@ -67,10 +68,10 @@ export default class WebMessageRPC<T> {
   /**
    * Creates a new WebMessageRPC instance.
    * @param adapter The adapter object used for sending and receiving messages.
-   * @param callRecord The call record, which can be an object containing methods.
+   * @param methods The call record, which can be an object containing methods.
    */
-  constructor(adapter: WebMessageRPC<T>["adapter"], callRecord?: CallRecord) {
-    this.callMap = new Map(Object.entries(callRecord ?? {}));
+  constructor(adapter: WebMessageRPC<T>["adapter"], methods?: Methods) {
+    this.callMap = new Map(Object.entries(methods ?? {}));
     this._messageHandler = this.messageHandler.bind(this);
     this.adapter = adapter;
     this.adapter!.addEventListener(this._messageHandler!);
@@ -151,59 +152,59 @@ export default class WebMessageRPC<T> {
 
   /**
    * Registers a group of methods to the call record.
-   * @param callRecord The call record, which can be an object containing methods.
+   * @param methods The call record, which can be an object containing methods.
    * @returns The registered call record.
    */
-  register<C extends CallRecord>(callRecord: C): Required<C>;
+  register<C extends Methods>(methods: C): Required<C>;
   /**
    * Registers a group of methods to the call record with a specified namespace.
    * @param namespace The namespace.
-   * @param callRecord The call record, which can be an object containing methods.
+   * @param methods The call record, which can be an object containing methods.
    * @returns The registered call record.
    */
-  register<C extends CallRecord>(namespace: string, callRecord: C): Required<C>;
-  register<C extends CallRecord>(arg1: string | C, arg2?: C): Required<C> {
+  register<C extends Methods>(namespace: string, methods: C): Required<C>;
+  register<C extends Methods>(arg1: string | C, arg2?: C): Required<C> {
     let namespace: string;
-    let callRecord: C | undefined;
+    let methods: C | undefined;
     if (typeof arg1 == "string") namespace = arg1;
-    if (typeof arg1 == "object") callRecord = arg1;
-    if (typeof arg2 == "object") callRecord = arg2;
-    if (!callRecord) throw new Error("'callRecord' cannot be undefined.");
-    Object.entries(callRecord).forEach(([methodName, value]) => {
+    if (typeof arg1 == "object") methods = arg1;
+    if (typeof arg2 == "object") methods = arg2;
+    if (!methods) throw new Error("'methods' cannot be undefined.");
+    Object.entries(methods).forEach(([methodName, value]) => {
       let key = namespace ? `${namespace}:${methodName}` : methodName;
       this.callMap.set(key, value);
     });
-    return callRecord as Required<C>;
+    return methods as Required<C>;
   }
 
   /**
    * Deregisters a group of methods from the call record.
-   * @param callRecord The call record, which can be an object containing methods.
+   * @param methods The call record, which can be an object containing methods.
    * @returns The deregistered call record.
    */
-  deregister<C extends CallRecord>(callRecord: C): Required<C>;
+  deregister<C extends Methods>(methods: C): Required<C>;
   /**
    * Deregisters a group of methods from the call record with a specified namespace.
    * @param namespace The namespace.
-   * @param callRecord The call record, which can be an object containing methods.
+   * @param methods The call record, which can be an object containing methods.
    * @returns The deregistered call record.
    */
-  deregister<C extends CallRecord>(
+  deregister<C extends Methods>(
     namespace: string,
-    callRecord: C
+    methods: C
   ): Required<C>;
-  deregister<C extends CallRecord>(arg1: string | C, arg2?: C): Required<C> {
+  deregister<C extends Methods>(arg1: string | C, arg2?: C): Required<C> {
     let namespace: string;
-    let callRecord: C | undefined;
+    let methods: C | undefined;
     if (typeof arg1 == "string") namespace = arg1;
-    if (typeof arg1 == "object") callRecord = arg1;
-    if (typeof arg2 == "object") callRecord = arg2;
-    if (!callRecord) throw new Error("'callRecord' cannot be undefined.");
-    Object.entries(callRecord).forEach(([methodName]) => {
+    if (typeof arg1 == "object") methods = arg1;
+    if (typeof arg2 == "object") methods = arg2;
+    if (!methods) throw new Error("'methods' cannot be undefined.");
+    Object.entries(methods).forEach(([methodName]) => {
       let key = namespace ? `${namespace}:${methodName}` : methodName;
       this.callMap.delete(key);
     });
-    return callRecord as Required<C>;
+    return methods as Required<C>;
   }
 
   /**
@@ -211,7 +212,7 @@ export default class WebMessageRPC<T> {
    * @param namespace The namespace.
    * @returns The proxy object for the namespace.
    */
-  use<C extends CallRecord>(namespace: string): C {
+  use<C extends Methods>(namespace: string): C {
     return new Proxy(
       {},
       {

@@ -2,7 +2,7 @@ export {
   default as WebMessageRPC,
   Adapter,
   Method,
-  CallRecord,
+  Methods,
 } from "./WebMessageRPC";
 
 export { formatError, generateToken } from "./utils";

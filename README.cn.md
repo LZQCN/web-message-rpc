@@ -186,11 +186,11 @@ const adapter: Adapter = {
 将一个方法集合注册到调用记录中。
 
 ```typescript
-register(callRecord: {[methodName: string]: (...args: any[]) => any})
-register(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
+register(methods: {[methodName: string]: (...args: any[]) => any})
+register(namespace: string, methods: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`：要注册的方法集合对象，包含方法名和对应的函数。
+- `methods`：要注册的方法集合对象，包含方法名和对应的函数。
 - `namespace`：可选参数，用于命名空间。
 
 ### deregister
@@ -198,11 +198,11 @@ register(namespace: string, callRecord: {[methodName: string]: (...args: any[]) 
 从调用记录中取消注册一个方法或方法集合。
 
 ```typescript
-deregister(callRecord: {[methodName: string]: (...args: any[]) => any})
-deregister(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
+deregister(methods: {[methodName: string]: (...args: any[]) => any})
+deregister(namespace: string, methods: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`：要取消注册的方法集合对象，包含方法名和对应的函数。
+- `methods`：要取消注册的方法集合对象，包含方法名和对应的函数。
 - `namespace`：可选参数，用于命名空间。
 
 ### use

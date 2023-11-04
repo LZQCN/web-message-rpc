@@ -186,11 +186,11 @@ const adapter: Adapter = {
 Register a collection of methods to the call record.
 
 ```typescript
-register(callRecord: {[methodName: string]: (...args: any[]) => any})
-register(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
+register(methods: {[methodName: string]: (...args: any[]) => any})
+register(namespace: string, methods: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`: The collection of methods to be registered, including the method names and corresponding functions.
+- `methods`: The collection of methods to be registered, including the method names and corresponding functions.
 - `namespace`: Optional parameter for namespace.
 
 ### deregister
@@ -198,11 +198,11 @@ register(namespace: string, callRecord: {[methodName: string]: (...args: any[]) 
 Unregister a method or a collection of methods from the call record.
 
 ```typescript
-deregister(callRecord: {[methodName: string]: (...args: any[]) => any})
-deregister(namespace: string, callRecord: {[methodName: string]: (...args: any[]) => any})
+deregister(methods: {[methodName: string]: (...args: any[]) => any})
+deregister(namespace: string, methods: {[methodName: string]: (...args: any[]) => any})
 ```
 
-- `callRecord`: The collection of methods to be unregistered, including the method names and corresponding functions.
+- `methods`: The collection of methods to be unregistered, including the method names and corresponding functions.
 - `namespace`: Optional parameter for namespace.
 
 ### use
