@@ -1,4 +1,5 @@
-import { generateToken, formatError } from "./utils";
+import LazyPromise from "@ai-zen/lazy-promise";
+import { formatError, generateToken } from "./utils";
 
 export interface Adapter {
   addEventListener(callback: (payload: any) => void): void;
@@ -48,7 +49,7 @@ export default class WebMessageRPC<T> {
             token,
           });
 
-          return new Promise((resolve, reject) => {
+          return new LazyPromise((resolve, reject) => {
             // Save the resolve and reject functions to the promiseMap for handling the call result later.
             this.promiseMap.set(token, { resolve, reject });
           });
@@ -189,10 +190,7 @@ export default class WebMessageRPC<T> {
    * @param methods The call record, which can be an object containing methods.
    * @returns The deregistered call record.
    */
-  deregister<C extends Methods>(
-    namespace: string,
-    methods: C
-  ): Required<C>;
+  deregister<C extends Methods>(namespace: string, methods: C): Required<C>;
   deregister<C extends Methods>(arg1: string | C, arg2?: C): Required<C> {
     let namespace: string;
     let methods: C | undefined;

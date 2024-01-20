@@ -1,0 +1,27 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@ai-zen/lazy-promise':
+    specifier: ^1.0.1
+    version: 1.0.1
+
+devDependencies:
+  typescript:
+    specifier: ^5.1.6
+    version: 5.3.3
+
+packages:
+
+  /@ai-zen/lazy-promise@1.0.1:
+    resolution: {integrity: sha512-O3C10w6MQnz3JOJcjkV1Bollq0cM34vR4htQxl2pihYKmmempr0ObXgKNldVQ7w/4G7Xa7/Pmzglcay99MGUaw==}
+    dev: false
+
+  /typescript@5.3.3:
+    resolution: {integrity: sha512-pXWcraxM0uxAS+tN0AG/BF2TyqmHO014Z070UsJ+pFvYuRSq8KH8DmWpnbXe0pEPDHXZV3FcAbJkijJ5oNEnWw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+    dev: true

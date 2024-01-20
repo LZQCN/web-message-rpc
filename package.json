@@ -21,5 +21,8 @@
   "homepage": "https://github.com/lzqcn/web-message-rpc",
   "devDependencies": {
     "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "@ai-zen/lazy-promise": "^1.0.1"
   }
 }
