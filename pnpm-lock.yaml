@@ -6,8 +6,8 @@ settings:
 
 dependencies:
   '@ai-zen/lazy-promise':
-    specifier: ^1.0.1
-    version: 1.0.1
+    specifier: ^1.0.2
+    version: 1.0.2
 
 devDependencies:
   typescript:
@@ -16,8 +16,8 @@ devDependencies:
 
 packages:
 
-  /@ai-zen/lazy-promise@1.0.1:
-    resolution: {integrity: sha512-O3C10w6MQnz3JOJcjkV1Bollq0cM34vR4htQxl2pihYKmmempr0ObXgKNldVQ7w/4G7Xa7/Pmzglcay99MGUaw==}
+  /@ai-zen/lazy-promise@1.0.2:
+    resolution: {integrity: sha512-pT3FCXpKcQUDk+zG6qflbwSz0aFtyFam50O1fjiZGmYyUjJQ9X44mWXYJIvT3saa8tzpiS5rd0gX4FogOKfrEQ==}
     dev: false
 
   /typescript@5.3.3:

@@ -1,5 +1,5 @@
 import LazyPromise from "@ai-zen/lazy-promise";
-import { formatError, generateToken } from "./utils";
+import { formatError, generateToken } from "./utils.js";
 
 export interface Adapter {
   addEventListener(callback: (payload: any) => void): void;

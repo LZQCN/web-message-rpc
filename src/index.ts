@@ -3,6 +3,6 @@ export {
   Adapter,
   Method,
   Methods,
-} from "./WebMessageRPC";
+} from "./WebMessageRPC.js";
 
-export { formatError, generateToken } from "./utils";
+export { formatError, generateToken } from "./utils.js";
